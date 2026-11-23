@@ -1,0 +1,31 @@
+name: Modern libfprint API compatibility probe
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/probe-modern-libfprint.sh'
+      - '.github/workflows/modern-api-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  modern-api-probe:
+    runs-on: ubuntu-24.04
+    continue-on-error: true
+    steps:
+      - name: Check out this repository
+        uses: actions/checkout@v4
+
+      - name: Install build prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential git meson ninja-build pkg-config \
+            libglib2.0-dev libusb-1.0-0-dev libgudev-1.0-dev \
+            libgusb-dev libnss3-dev libpixman-1-dev lib cairo2-dev
+
+      - name: Probe libfprint 1.94.7 compatibility
+        run: bash scripts/probe-modern-libfprint.sh
