@@ -1,0 +1,22 @@
+# Local build output
+/build/
+/_build/
+/meson-private/
+/meson-logs/
+/.cache/
+
+# Vendor/proprietary payloads: never commit these
+*.rpm
+*.tar
+*.tar.gz
+*.tgz
+*.img
+*.bin
+libvfsFprintWrapper.so*
+vcsFPService
+
+# Local reports and extracted packages
+/reports/
+/vendor/
+/vendor-files/
+/extracted/
