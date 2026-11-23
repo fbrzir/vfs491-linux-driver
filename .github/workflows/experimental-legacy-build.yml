@@ -1,0 +1,42 @@
+name: Experimental legacy VFS491 build
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/build-legacy-reference.sh'
+      - '.github/workflows/experimental-legacy-build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  legacy-reference-build:
+    # This deliberately tests the historical API baseline only. It is
+    # non-blocking while modern libfprint API compatibility is investigated.
+    runs-on: ubuntu-24.04
+    continue-on-error: true
+    steps:
+      - name: Check out this repository
+        uses: actions/checkout@v4
+
+      - name: Install isolated build prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential cpio curl git meson ninja-build pkg-config \
+            rpm2cpio libglib2.0-dev libusb-1.0-0-dev libnss3-dev \
+            libpixman-1-dev libgudev-1.0-dev libgusb-dev
+
+      - name: Build pinned legacy reference
+        run: bash scripts/build-legacy-reference.sh
+
+      - name: Upload build workspace on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vfs491-legacy-build-workspace
+          path: .work/vfs491-legacy-build/
+          if-no-files-found: ignore
+          retention-days: 7
