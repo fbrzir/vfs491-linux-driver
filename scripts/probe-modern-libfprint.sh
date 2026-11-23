@@ -52,6 +52,22 @@ grep -q "^libfprint = " libfprint/meson.build || {
 }
 
 sed -i "/^all_drivers =/a all_drivers += [ 'vfs_proprietary' ]" meson.build
+python3 - <<'PY'
+from pathlib import Path
+
+path = Path("libfprint/meson.build")
+source = path.read_text()
+marker = "}\n\nhelper_sources = {"
+if marker not in source:
+    raise SystemExit("Could not locate end of driver_sources dictionary")
+source = source.replace(
+    marker,
+    "    'vfs_proprietary' : [],\n" + marker,
+    1,
+)
+path.write_text(source)
+PY
+
 sed -i "/^libfprint =/i libvfsFprintWrapper_dir='$WORK_DIR/stub'\nsubdir('drivers/vfs_proprietary')" libfprint/meson.build
 
 echo "==> Showing upstream driver registration context"
