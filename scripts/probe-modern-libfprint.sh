@@ -54,6 +54,11 @@ grep -q "^libfprint = " libfprint/meson.build || {
 sed -i "/^all_drivers =/a all_drivers += [ 'vfs_proprietary' ]" meson.build
 sed -i "/^libfprint =/i libvfsFprintWrapper_dir='$WORK_DIR/stub'\nsubdir('drivers/vfs_proprietary')" libfprint/meson.build
 
+echo "==> Showing upstream driver registration context"
+sed -n '115,190p' libfprint/meson.build
+echo "==> Showing injected driver Meson integration"
+sed -n '1,180p' libfprint/drivers/vfs_proprietary/meson.build
+
 echo "==> Configuring modern API probe with only the driver selection override"
 meson setup build -D drivers=vfs_proprietary
 
