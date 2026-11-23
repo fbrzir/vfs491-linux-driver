@@ -54,8 +54,8 @@ grep -q "^libfprint = " libfprint/meson.build || {
 sed -i "/^all_drivers =/a all_drivers += [ 'vfs_proprietary' ]" meson.build
 sed -i "/^libfprint =/i libvfsFprintWrapper_dir='$WORK_DIR/stub'\nsubdir('drivers/vfs_proprietary')" libfprint/meson.build
 
-echo "==> Configuring modern API probe"
-meson setup build -D drivers=vfs_proprietary -D x11-examples=false -D gtk-examples=false -D doc=false
+echo "==> Configuring modern API probe with only the driver selection override"
+meson setup build -D drivers=vfs_proprietary
 
 echo "==> Compiling only; no hardware, daemon, PAM, or installation is touched"
 ninja -C build -v
